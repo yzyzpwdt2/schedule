@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08111f">
+<title>北市勤務排程</title>
+<style>
+:root{
+  --bg:#08111f;--panel:#0f1a2c;--panel2:#162844;--line:#263955;
+  --text:#f7f9fc;--muted:#a4afc1;--blue:#2f80ed;--green:#198754;
+  --gold:#8a6327;--red:#c74444;--pink:#ba3f7c;--yellow:#ffd740;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif}
+body{min-height:100vh}
+.app{max-width:560px;margin:auto;padding:calc(env(safe-area-inset-top) + 14px) 10px calc(env(safe-area-inset-bottom) + 24px)}
+.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+h1{margin:0;font-size:25px;line-height:1.15}.sub{font-size:12px;color:var(--muted);margin-top:4px}
+.todaybox{text-align:right;font-size:12px;color:var(--muted);line-height:1.5}
+.search{width:100%;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:14px;padding:12px 13px;font-size:16px;margin-bottom:10px;outline:none}
+.toolbar,.peoplebar{display:flex;gap:7px;overflow:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-bottom:10px}
+.toolbar::-webkit-scrollbar,.peoplebar::-webkit-scrollbar{display:none}
+.pill{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:8px 12px;font-size:14px;font-weight:800;white-space:nowrap}
+.pill.on{background:var(--blue);border-color:var(--blue)}
+.summary{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0 14px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:11px}
+.stat .label{font-size:11px;color:var(--muted)}.stat .num{font-size:22px;font-weight:900;margin-top:3px}
+.dayblock{border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:12px;background:var(--panel)}
+.dayhead{background:linear-gradient(90deg,#18345a,#142642);display:flex;justify-content:space-between;align-items:center;padding:9px 11px;font-weight:900;font-size:16px}
+.dayhead span{font-size:12px;color:#c4d0df;font-weight:700}
+.job{display:grid;grid-template-columns:62px minmax(0,1fr) auto;gap:10px;padding:11px 10px;border-top:1px solid var(--line);align-items:center}
+.dayhead + .job{border-top:0}
+.when{text-align:center}.time{font-size:17px;font-weight:900;line-height:1.1}.datehint{font-size:11px;color:var(--muted);margin-top:4px}
+.customer{font-size:17px;font-weight:900;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task{font-size:13px;font-weight:800;margin-top:5px}
+.tasktag{display:inline-block;border-radius:8px;padding:4px 8px;background:#18375f;color:#dceafe}
+.tasktag.red{background:#4b2328;color:#ff9b9b}.tasktag.yellow{background:#5f5100;color:#ffe46d}
+.note{font-size:12px;color:var(--muted);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.people{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;max-width:122px}
+.person{min-width:50px;text-align:center;padding:7px 9px;border-radius:9px;font-size:13px;font-weight:900;background:#1c5fae}
+.person:nth-child(2n){background:#7e5c27}.person:nth-child(3n){background:#14784f}.person:nth-child(4n){background:#9b356d}
+.detail{display:none;grid-column:1/-1;margin-top:4px;padding:10px 4px 0;border-top:1px solid var(--line);font-size:13px;color:var(--muted);line-height:1.55}
+.job.open .detail{display:block}
+.arrow{display:none}
+.empty{padding:20px;text-align:center;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:16px}
+@media(max-width:390px){
+  .job{grid-template-columns:56px minmax(0,1fr) auto;gap:8px;padding:10px 8px}
+  .customer{font-size:16px}
+  .person{min-width:46px;padding:6px 7px;font-size:12px}
+  .people{max-width:105px}
+}
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="勤務排程">
+<link rel="apple-touch-icon" href="icon-192.png">
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div>
+      <h1>北市勤務排程</h1>
+      <div class="sub">B 全覽模式 · 團隊共用瀏覽</div>
+    </div>
+    <div class="todaybox">2026/9/11（五）<br>資料示範版</div>
+  </div>
+
+  <input id="search" class="search" placeholder="搜尋客戶、工作、人員、備註…">
+
+  <div class="toolbar">
+    <button class="pill on" data-view="all">全部</button>
+    <button class="pill" data-view="today">今天</button>
+    <button class="pill" data-view="week">7天內</button>
+    <button class="pill" data-view="future">後續</button>
+  </div>
+
+  <div class="peoplebar">
+    <button class="pill on" data-person="">全部人員</button>
+    <button class="pill" data-person="文豪">文豪</button>
+    <button class="pill" data-person="耀文">耀文</button>
+    <button class="pill" data-person="保鈞">保鈞</button>
+    <button class="pill" data-person="恆諄">恆諄</button>
+    <button class="pill" data-person="財哥">財哥</button>
+  </div>
+
+  <div class="summary">
+    <div class="stat"><div class="label">目前顯示</div><div class="num" id="shown">0 筆</div></div>
+    <div class="stat"><div class="label">最近勤務</div><div class="num" id="next">—</div></div>
+  </div>
+
+  <div id="list"></div>
+</div>
+
+<script>
+const DATA=[{"date": "2026/9/10", "time": "15:00", "customer": "4383 南港園區店", "task": "重裝撤店", "people": ["文豪", "耀文"], "note": "台北市南港區重陽路472號一樓"}, {"date": "2026/9/11", "time": "15:00", "customer": "2397 內湖中時店", "task": "閉店撤店", "people": ["保鈞", "耀文"], "note": "台北市內湖區民權東路六段58號"}, {"date": "2026/9/14", "time": "11:00", "customer": "2707 大同哈密店", "task": "重裝新開", "people": ["保鈞", "恆諄"], "note": ""}, {"date": "2026/9/16", "time": "15:00", "customer": "B156 松山敦化公園", "task": "重裝撤店", "people": ["文豪", "恆諄"], "note": ""}, {"date": "2026/9/16", "time": "下午", "customer": "5426 大安忠孝東", "task": "TM掃槍POC", "people": ["恆諄"], "note": "TM 一機 (Zebra DS2208) + TM 二機 (AIDA 914...)"}, {"date": "2026/9/16", "time": "15:00", "customer": "3597 萬華雙園店", "task": "重裝撤店", "people": ["保鈞"], "note": ""}, {"date": "2026/9/17", "time": "11:00", "customer": "2707 大同哈密店", "task": "重裝新開", "people": ["保鈞", "恆諄"], "note": ""}, {"date": "2026/9/17", "time": "14:00", "customer": "增鴻科技", "task": "換機", "people": ["耀文", "文豪"], "note": "現場裝機　*帶四支滾筒備用"}, {"date": "2026/9/18", "time": "14:00", "customer": "癌醫", "task": "增租", "people": ["恆諄", "保鈞"], "note": "健康管理中心 3525AC*2"}, {"date": "2026/9/18", "time": "", "customer": "台大泌尿科3525AC", "task": "短租", "people": ["財哥"], "note": "9/18-9/21 張榮發基金會"}, {"date": "2026/9/21", "time": "15:00", "customer": "2006 內湖金湖店", "task": "閉店撤店", "people": ["耀文", "文豪"], "note": ""}, {"date": "2026/9/29", "time": "", "customer": "台哥大電信21樓", "task": "增租", "people": [], "note": "TES3028A 4工2屜"}, {"date": "2026/9/29", "time": "15:00", "customer": "4159 萬華廣州店", "task": "閉店撤店", "people": ["保鈞", "恆諄"], "note": ""}, {"date": "2026/10/6", "time": "10:00", "customer": "自來水工會", "task": "增租", "people": ["文豪"], "note": "懷寧街"}, {"date": "2026/10/6", "time": "11:00", "customer": "5511 大同大龍峒", "task": "新開門市", "people": ["保鈞"], "note": "MMK設置在門市，其餘設備在三重倉"}, {"date": "2026/10/15", "time": "11:00", "customer": "4383 南港園區店", "task": "重裝新開", "people": [], "note": ""}, {"date": "2026/10/28", "time": "11:00", "customer": "B156 松山敦化公園", "task": "重裝新開", "people": [], "note": ""}, {"date": "", "time": "", "customer": "台哥大文創", "task": "設定", "people": ["文豪", "保鈞"], "note": "更改IP/PaperCut/Server Driver Port"}];
+let currentView='all', currentPerson='';
+const BASE=new Date(2026,8,11,0,0,0,0);
+const WEEK=['日','一','二','三','四','五','六'];
+
+function parseDate(s){
+  if(!s) return null;
+  const p=s.split('/');
+  if(p.length!==3) return null;
+  return new Date(Number(p[0]),Number(p[1])-1,Number(p[2]),0,0,0,0);
+}
+function diffDays(d){return Math.round((d.getTime()-BASE.getTime())/86400000)}
+function formatDay(s){
+  const d=parseDate(s);
+  if(!d) return '未定日期';
+  return `${s}（${WEEK[d.getDay()]}）`;
+}
+function tagClass(task){
+  if(task==='短租') return 'yellow';
+  return /新開|增租|POC/.test(task)?'red':'';
+}
+function visibleRows(){
+  const q=(document.getElementById('search').value||'').trim().toLowerCase();
+  return DATA.filter(x=>{
+    const d=parseDate(x.date), dd=d?diffDays(d):9999;
+    const viewOK=
+      currentView==='all' ||
+      (currentView==='today' && dd===0) ||
+      (currentView==='week' && dd>=0 && dd<=7) ||
+      (currentView==='future' && dd>7);
+    const personOK=!currentPerson || x.people.includes(currentPerson);
+    const hay=(x.date+' '+x.time+' '+x.customer+' '+x.task+' '+x.people.join(' ')+' '+x.note).toLowerCase();
+    return viewOK && personOK && (!q || hay.includes(q));
+  });
+}
+function render(){
+  const rows=visibleRows();
+  document.getElementById('shown').textContent=rows.length+' 筆';
+
+  const dated=rows.filter(x=>x.date).sort((a,b)=>parseDate(a.date)-parseDate(b.date));
+  document.getElementById('next').textContent=dated.length
+    ? dated[0].date.replace('2026/','')+' '+(dated[0].time||'未定')
+    : '—';
+
+  const groups={};
+  rows.forEach(x=>{const k=x.date||'未定日期';(groups[k]??=[]).push(x)});
+  const keys=Object.keys(groups).sort((a,b)=>{
+    if(a==='未定日期') return 1;
+    if(b==='未定日期') return -1;
+    return parseDate(a)-parseDate(b);
+  });
+
+  document.getElementById('list').innerHTML=keys.map(k=>{
+    const items=groups[k];
+    return `<section class="dayblock">
+      <div class="dayhead"><div>${formatDay(k)}</div><span>${items.length} 筆</span></div>
+      ${items.map(x=>`
+        <div class="job" onclick="this.classList.toggle('open')">
+          <div class="when">
+            <div class="time">${x.time||'未定'}</div>
+            <div class="datehint">${x.date?x.date.replace('2026/',''):''}</div>
+          </div>
+          <div class="main">
+            <div class="customer">${x.customer}</div>
+            <div class="task"><span class="tasktag ${tagClass(x.task)}">${x.task}</span></div>
+            ${x.note?`<div class="note">${x.note}</div>`:''}
+          </div>
+          <div class="people">
+            ${x.people.length?x.people.map(p=>`<span class="person">${p}</span>`).join(''):'<span class="sub">未定</span>'}
+          </div>
+          ${x.note?`<div class="detail"><b style="color:var(--text)">備註：</b>${x.note}</div>`:''}
+        </div>`).join('')}
+    </section>`;
+  }).join('') || '<div class="empty">沒有符合條件的勤務</div>';
+}
+
+document.getElementById('search').addEventListener('input',render);
+document.querySelectorAll('[data-view]').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('[data-view]').forEach(x=>x.classList.remove('on'));
+  btn.classList.add('on');currentView=btn.dataset.view;render();
+}));
+document.querySelectorAll('[data-person]').forEach(btn=>btn.addEventListener('click',()=>{
+  document.querySelectorAll('[data-person]').forEach(x=>x.classList.remove('on'));
+  btn.classList.add('on');currentPerson=btn.dataset.person;render();
+}));
+render();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+</script>
+</body>
+</html>
