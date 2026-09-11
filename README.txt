@@ -1,1 +1,1 @@
-B 全覽模式 v2.1：修正「今天 / 7天內 / 後續」及工程師姓名篩選按鈕無法操作，搜尋亦可即時篩選。六個檔案直接覆蓋 GitHub 原檔。
+1. Google Sheet → 擴充功能 → Apps Script，貼入 Code.gs。\n2. 部署 → 新增部署 → 網頁應用程式。執行身分：我；誰可以存取：任何人。\n3. 複製 /exec 網址，貼到 config.js 的引號內。\n4. 將 index.html、admin.html、config.js、manifest、sw.js、兩個 icon 上傳 GitHub Pages。\n5. / 為全覽，/admin.html 為電腦新增勤務。\n\n欄位假設：A核取方塊、B日期、C時間、D客戶、E工作內容、F工程師、G備註。
