@@ -1,7 +1,9 @@
 <!doctype html>
+
 <html lang="zh-Hant">
 
 <head>
+
   <meta charset="utf-8">
 
   <meta
@@ -9,23 +11,37 @@
     content="width=device-width, initial-scale=1, viewport-fit=cover"
   >
 
-  <meta name="theme-color" content="#08111f">
+  <meta
+    name="theme-color"
+    content="#08111f"
+  >
 
-  <link rel="manifest" href="manifest.webmanifest">
+  <link
+    rel="manifest"
+    href="manifest.webmanifest"
+  >
 
-  <title>北市勤務排程</title>
+  <title>
+    北市勤務排程
+  </title>
+
 
   <style>
+
     * {
       box-sizing: border-box;
     }
 
+
     html,
     body {
+
       margin: 0;
       padding: 0;
+
       background: #08111f;
       color: #fff;
+
       font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -34,113 +50,178 @@
         sans-serif;
     }
 
+
     body {
       min-height: 100vh;
     }
 
+
     .app {
+
       max-width: 560px;
+
       margin: 0 auto;
 
       padding-left: 10px;
       padding-right: 10px;
-      padding-bottom: calc(18px + env(safe-area-inset-bottom));
+
+      padding-bottom:
+        calc(
+          18px +
+          env(safe-area-inset-bottom)
+        );
 
       /*
-       * iPhone / Dynamic Island / 狀態列安全區
-       * 額外再往下留 28px
+       * iPhone 狀態列 / 動態島避讓
        */
-      padding-top: calc(env(safe-area-inset-top) + 28px);
+      padding-top:
+        calc(
+          env(safe-area-inset-top) +
+          28px
+        );
     }
 
+
     .top {
+
       display: flex;
+
       justify-content: space-between;
+
       align-items: flex-start;
+
       gap: 10px;
     }
 
+
     .title {
+
       margin: 0;
+
       font-size: 23px;
+
       line-height: 1.2;
+
       font-weight: 900;
     }
 
+
     .muted {
+
       color: #9aa8bb;
+
       font-size: 12px;
     }
 
+
     #today {
+
       white-space: nowrap;
+
       padding-top: 2px;
     }
 
+
     .search {
+
       width: 100%;
+
       margin: 12px 0 8px;
+
       padding: 11px 12px;
 
       border-radius: 13px;
-      border: 1px solid #29405f;
+
+      border:
+        1px solid #29405f;
 
       background: #0f1a2c;
+
       color: #fff;
 
       font-size: 15px;
+
       outline: none;
     }
+
 
     .search::placeholder {
       color: #75869c;
     }
 
+
     .bar {
+
       display: flex;
+
       gap: 7px;
+
       margin-bottom: 8px;
     }
 
+
     .pill {
+
       flex: 1;
 
       padding: 9px 4px;
 
-      border: 1px solid #29405f;
+      border:
+        1px solid #29405f;
+
       border-radius: 999px;
 
       background: #0f1a2c;
+
       color: #fff;
 
       font-size: 14px;
+
       font-weight: 800;
 
       cursor: pointer;
     }
 
+
     .pill.on {
+
       background: #2f80ed;
+
       border-color: #2f80ed;
     }
 
+
     .peoplebar {
+
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
       gap: 7px;
 
       margin-bottom: 8px;
     }
 
+
     .info {
+
       font-size: 12px;
+
       color: #9aa8bb;
 
-      margin: 7px 4px 10px;
+      margin:
+        7px
+        4px
+        10px;
     }
 
+
     .day {
-      border: 1px solid #29405f;
+
+      border:
+        1px solid #29405f;
+
       border-radius: 15px;
 
       overflow: hidden;
@@ -150,9 +231,13 @@
       margin-bottom: 10px;
     }
 
+
     .dayhead {
+
       display: flex;
+
       justify-content: space-between;
+
       align-items: center;
 
       background: #19385f;
@@ -160,10 +245,17 @@
       padding: 9px 11px;
 
       font-size: 16px;
+
       font-weight: 900;
     }
 
+
+    /*
+     * 每一筆勤務
+     */
+
     .job {
+
       display: grid;
 
       grid-template-columns:
@@ -177,32 +269,54 @@
 
       padding: 10px 9px;
 
-      border-top: 1px solid #29405f;
+      border-top:
+        1px solid #29405f;
+
+      cursor: pointer;
+
+      -webkit-tap-highlight-color:
+        transparent;
     }
 
-    .job:first-child {
-      border-top: none;
+
+    .job:hover {
+      background: #111f33;
     }
+
+
+    .job.open {
+      background: #111f33;
+    }
+
 
     .time {
+
       text-align: center;
 
       font-size: 17px;
+
       font-weight: 900;
 
       line-height: 1.2;
     }
 
+
     .customer {
+
       font-size: 16px;
+
       font-weight: 900;
 
       white-space: nowrap;
+
       overflow: hidden;
+
       text-overflow: ellipsis;
     }
 
+
     .tag {
+
       display: inline-block;
 
       margin-top: 4px;
@@ -214,32 +328,29 @@
       background: #17375f;
 
       font-size: 12px;
+
       font-weight: 800;
     }
 
+
     .tag.red {
+
       background: #512529;
+
       color: #ff9c9c;
     }
 
+
     .tag.yellow {
+
       background: #5c5000;
+
       color: #ffe76c;
     }
 
-    .note {
-      margin-top: 4px;
-
-      color: #9aa8bb;
-
-      font-size: 12px;
-
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
 
     .people {
+
       display: flex;
 
       gap: 5px;
@@ -251,7 +362,9 @@
       max-width: 116px;
     }
 
+
     .person {
+
       min-width: 49px;
 
       padding: 7px 8px;
@@ -263,14 +376,117 @@
       background: #1c65ba;
 
       font-size: 13px;
+
       font-weight: 900;
     }
+
 
     .person:nth-child(2) {
       background: #8a6327;
     }
 
+
+    /*
+     * 備註展開區
+     *
+     * 預設完全隱藏
+     */
+
+    .details {
+
+      display: none;
+
+      grid-column:
+        1 / -1;
+
+      margin-top: 3px;
+
+      padding:
+        10px
+        11px
+        3px;
+
+      border-top:
+        1px dashed #36506f;
+
+      color: #c1cede;
+    }
+
+
+    /*
+     * 點勤務後展開
+     */
+
+    .job.open .details {
+      display: block;
+    }
+
+
+    .detail-row {
+
+      display: grid;
+
+      grid-template-columns:
+        54px
+        minmax(0, 1fr);
+
+      gap: 7px;
+
+      margin-bottom: 8px;
+
+      font-size: 13px;
+
+      line-height: 1.55;
+    }
+
+
+    .detail-label {
+
+      color: #6faeff;
+
+      font-weight: 900;
+    }
+
+
+    .detail-text {
+
+      color: #c5d2e3;
+
+      white-space: normal;
+
+      overflow-wrap: anywhere;
+
+      word-break: break-word;
+    }
+
+
+    /*
+     * 有備註時顯示小提示
+     */
+
+    .detail-hint {
+
+      display: inline-block;
+
+      margin-left: 6px;
+
+      color: #7ea3cf;
+
+      font-size: 11px;
+
+      font-weight: 500;
+
+      vertical-align: middle;
+    }
+
+
+    .job.open .detail-hint {
+      color: #8ebfff;
+    }
+
+
     .state {
+
       padding: 24px;
 
       text-align: center;
@@ -278,13 +494,19 @@
       color: #9aa8bb;
     }
 
+
     @media (max-width: 380px) {
+
       .app {
+
         padding-left: 8px;
+
         padding-right: 8px;
       }
 
+
       .job {
+
         grid-template-columns:
           52px
           minmax(0, 1fr)
@@ -293,549 +515,890 @@
         gap: 7px;
       }
 
+
       .time {
         font-size: 16px;
       }
+
 
       .customer {
         font-size: 15px;
       }
 
+
       .person {
+
         min-width: 45px;
+
         padding: 7px 6px;
       }
+
     }
+
   </style>
+
 </head>
+
 
 <body>
 
-  <div class="app">
 
-    <div class="top">
+<div class="app">
 
-      <div>
-        <h1 class="title">
-          北市勤務排程
-        </h1>
 
-        <div class="muted">
-          B 全覽模式
-        </div>
+  <div class="top">
+
+
+    <div>
+
+      <h1 class="title">
+        北市勤務排程
+      </h1>
+
+      <div class="muted">
+        B 全覽模式
       </div>
-
-      <div
-        class="muted"
-        id="today">
-      </div>
-
-    </div>
-
-
-    <input
-      id="search"
-      class="search"
-      placeholder="搜尋客戶、工作、人員、備註…"
-    >
-
-
-    <div class="bar">
-
-      <button
-        class="pill on"
-        data-view="all">
-        全部
-      </button>
-
-      <button
-        class="pill"
-        data-view="today">
-        今天
-      </button>
-
-      <button
-        class="pill"
-        data-view="week">
-        7天內
-      </button>
-
-      <button
-        class="pill"
-        data-view="future">
-        後續
-      </button>
-
-    </div>
-
-
-    <div class="peoplebar">
-
-      <button
-        class="pill on"
-        data-person="">
-        全部人員
-      </button>
-
-      <button
-        class="pill"
-        data-person="文豪">
-        文豪
-      </button>
-
-      <button
-        class="pill"
-        data-person="耀文">
-        耀文
-      </button>
-
-      <button
-        class="pill"
-        data-person="保鈞">
-        保鈞
-      </button>
-
-      <button
-        class="pill"
-        data-person="恆諄">
-        恆諄
-      </button>
-
-      <button
-        class="pill"
-        data-person="財哥">
-        財哥
-      </button>
 
     </div>
 
 
     <div
-      class="info"
-      id="info">
-      讀取資料中…
+      class="muted"
+      id="today">
     </div>
 
 
-    <div id="list">
+  </div>
 
-      <div class="state">
-        正在從 Google Sheet 讀取…
-      </div>
+
+  <input
+    id="search"
+    class="search"
+    placeholder="搜尋客戶、工作、人員、備註…"
+  >
+
+
+  <div class="bar">
+
+    <button
+      class="pill on"
+      data-view="all">
+      全部
+    </button>
+
+    <button
+      class="pill"
+      data-view="today">
+      今天
+    </button>
+
+    <button
+      class="pill"
+      data-view="week">
+      7天內
+    </button>
+
+    <button
+      class="pill"
+      data-view="future">
+      後續
+    </button>
+
+  </div>
+
+
+  <div class="peoplebar">
+
+    <button
+      class="pill on"
+      data-person="">
+      全部人員
+    </button>
+
+    <button
+      class="pill"
+      data-person="文豪">
+      文豪
+    </button>
+
+    <button
+      class="pill"
+      data-person="耀文">
+      耀文
+    </button>
+
+    <button
+      class="pill"
+      data-person="保鈞">
+      保鈞
+    </button>
+
+    <button
+      class="pill"
+      data-person="恆諄">
+      恆諄
+    </button>
+
+    <button
+      class="pill"
+      data-person="財哥">
+      財哥
+    </button>
+
+  </div>
+
+
+  <div
+    class="info"
+    id="info">
+
+    讀取資料中…
+
+  </div>
+
+
+  <div id="list">
+
+    <div class="state">
+
+      正在從 Google Sheet 讀取…
 
     </div>
 
   </div>
 
 
-  <script src="config.js"></script>
-
-  <script>
-    let DATA = [];
-
-    let currentView = "all";
-    let currentPerson = "";
+</div>
 
 
-    const W = [
-      "日",
-      "一",
-      "二",
-      "三",
-      "四",
-      "五",
-      "六"
-    ];
+<script src="config.js"></script>
 
 
-    const T = new Date();
+<script>
 
-    T.setHours(
-      0,
-      0,
-      0,
-      0
+let DATA = [];
+
+let currentView = "all";
+
+let currentPerson = "";
+
+
+const W = [
+  "日",
+  "一",
+  "二",
+  "三",
+  "四",
+  "五",
+  "六"
+];
+
+
+const T =
+  new Date();
+
+
+T.setHours(
+  0,
+  0,
+  0,
+  0
+);
+
+
+/*
+ * 今天日期
+ */
+
+today.textContent =
+  `${T.getFullYear()}/` +
+  `${T.getMonth() + 1}/` +
+  `${T.getDate()}` +
+  `（${W[T.getDay()]}）`;
+
+
+
+/*
+ * 日期解析
+ */
+
+function pd(s) {
+
+  const m =
+    String(s || "")
+      .match(
+        /(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})/
+      );
+
+
+  if (!m) {
+    return null;
+  }
+
+
+  const d =
+    new Date(
+      +m[1],
+      +m[2] - 1,
+      +m[3]
     );
 
 
-    // ==========================
-    // 今天日期
-    // ==========================
-
-    today.textContent =
-      `${T.getFullYear()}/` +
-      `${T.getMonth() + 1}/` +
-      `${T.getDate()}` +
-      `（${W[T.getDay()]}）`;
+  d.setHours(
+    0,
+    0,
+    0,
+    0
+  );
 
 
-    // ==========================
-    // 日期解析
-    // ==========================
+  return d;
+}
 
-    function pd(s) {
 
-      const m =
-        String(s || "").match(
-          /(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})/
-        );
 
-      if (!m) {
-        return null;
-      }
+function dd(s) {
 
-      const d =
-        new Date(
-          +m[1],
-          +m[2] - 1,
-          +m[3]
-        );
+  const d =
+    pd(s);
 
-      d.setHours(
-        0,
-        0,
-        0,
-        0
+
+  return d
+    ? Math.round(
+        (d - T) /
+        86400000
+      )
+    : 99999;
+}
+
+
+
+/*
+ * 工作標籤顏色
+ */
+
+function tc(t) {
+
+  if (t === "短租") {
+    return "yellow";
+  }
+
+
+  return /新開|增租|POC/.test(
+    t || ""
+  )
+    ? "red"
+    : "";
+}
+
+
+
+/*
+ * HTML 特殊字元處理
+ */
+
+function esc(value) {
+
+  return String(
+    value ?? ""
+  )
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+}
+
+
+
+/*
+ * 篩選
+ */
+
+function rows() {
+
+  const q =
+    search.value
+      .trim()
+      .toLowerCase();
+
+
+  return DATA.filter(x => {
+
+    const n =
+      dd(x.date);
+
+
+    const viewOK =
+
+      currentView === "all"
+
+      ||
+
+      (
+        currentView === "today" &&
+        n === 0
+      )
+
+      ||
+
+      (
+        currentView === "week" &&
+        n >= 0 &&
+        n <= 7
+      )
+
+      ||
+
+      (
+        currentView === "future" &&
+        n > 7
       );
 
-      return d;
-    }
 
+    const personOK =
 
-    function dd(s) {
+      !currentPerson
 
-      const d = pd(s);
+      ||
 
-      return d
-        ? Math.round(
-            (d - T) / 86400000
-          )
-        : 99999;
-    }
-
-
-    // ==========================
-    // 工作類型顏色
-    // ==========================
-
-    function tc(t) {
-
-      if (t === "短租") {
-        return "yellow";
-      }
-
-      return /新開|增租|POC/.test(t || "")
-        ? "red"
-        : "";
-    }
-
-
-    // ==========================
-    // 篩選資料
-    // ==========================
-
-    function rows() {
-
-      const q =
-        search.value
-          .trim()
-          .toLowerCase();
-
-
-      return DATA.filter(x => {
-
-        const n =
-          dd(x.date);
-
-
-        const viewOK =
-          currentView === "all" ||
-
-          (
-            currentView === "today" &&
-            n === 0
-          ) ||
-
-          (
-            currentView === "week" &&
-            n >= 0 &&
-            n <= 7
-          ) ||
-
-          (
-            currentView === "future" &&
-            n > 7
-          );
-
-
-        const personOK =
-          !currentPerson ||
-          (x.people || []).includes(
-            currentPerson
-          );
-
-
-        const text = [
-          x.date,
-          x.time,
-          x.customer,
-          x.task,
-          (x.people || []).join(" "),
-          x.note
-        ]
-          .join(" ")
-          .toLowerCase();
-
-
-        return (
-          viewOK &&
-          personOK &&
-          (
-            !q ||
-            text.includes(q)
-          )
+      (x.people || [])
+        .includes(
+          currentPerson
         );
 
-      });
+
+    /*
+     * 搜尋也包含備註1、2、3
+     */
+
+    const text = [
+
+      x.date,
+
+      x.time,
+
+      x.customer,
+
+      x.task,
+
+      (x.people || [])
+        .join(" "),
+
+      x.note1 || x.note,
+
+      x.note2,
+
+      x.note3
+
+    ]
+      .join(" ")
+      .toLowerCase();
+
+
+    return (
+
+      viewOK
+
+      &&
+
+      personOK
+
+      &&
+
+      (
+        !q ||
+        text.includes(q)
+      )
+
+    );
+
+  });
+
+}
+
+
+
+/*
+ * 畫面顯示
+ */
+
+function render() {
+
+  const r =
+    rows();
+
+
+  const groups = {};
+
+
+  /*
+   * 完全照 Sheet 原始列順序
+   */
+
+  r.forEach(x => {
+
+    const key =
+      x.date ||
+      "未定日期";
+
+
+    if (!groups[key]) {
+      groups[key] = [];
     }
 
 
-    // ==========================
-    // 畫面顯示
-    // ==========================
+    groups[key].push(x);
 
-    function render() {
-
-      const r =
-        rows();
+  });
 
 
-      const groups = {};
+  info.textContent =
+    `目前顯示 ${r.length} 筆`;
 
 
-      /*
-       * 這裡完全照 Google Sheet
-       * 原始列順序建立群組
-       *
-       * 不再另外按日期排序
-       */
-      r.forEach(x => {
-
-        const key =
-          x.date || "未定日期";
-
-        if (!groups[key]) {
-          groups[key] = [];
-        }
-
-        groups[key].push(x);
-
-      });
+  const groupKeys =
+    Object.keys(groups);
 
 
-      info.textContent =
-        `目前顯示 ${r.length} 筆`;
+
+  list.innerHTML =
+
+    groupKeys
+      .map(k => {
 
 
-      const groupKeys =
-        Object.keys(groups);
+        const d =
+          pd(k);
 
 
-      list.innerHTML =
-        groupKeys
-          .map(k => {
-
-            const d =
-              pd(k);
-
-            const jobs =
-              groups[k];
+        const jobs =
+          groups[k];
 
 
-            const weekday =
-              d
-                ? `（${W[d.getDay()]}）`
-                : "";
+        const weekday =
+          d
+            ? `（${W[d.getDay()]}）`
+            : "";
 
 
-            const jobHTML =
-              jobs
-                .map(x => {
 
-                  const peopleHTML =
-                    (x.people || [])
-                      .map(
-                        p =>
-                          `<span class="person">${p}</span>`
-                      )
-                      .join("");
+        const jobHTML =
+
+          jobs
+            .map(x => {
 
 
-                  const noteHTML =
-                    x.note
-                      ? `<div class="note">${x.note}</div>`
-                      : "";
+              const peopleHTML =
+
+                (x.people || [])
+                  .map(
+                    p =>
+                      `<span class="person">${esc(p)}</span>`
+                  )
+                  .join("");
 
 
-                  return `
-                    <div class="job">
 
-                      <div class="time">
-                        ${x.time || "未定"}
+              const note1 =
+                x.note1 ||
+                x.note ||
+                "";
+
+
+              const note2 =
+                x.note2 ||
+                "";
+
+
+              const note3 =
+                x.note3 ||
+                "";
+
+
+              const hasDetails =
+                note1 ||
+                note2 ||
+                note3;
+
+
+
+              const hintHTML =
+                hasDetails
+                  ? `<span class="detail-hint">點擊查看備註</span>`
+                  : "";
+
+
+
+              let detailsHTML =
+                "";
+
+
+              if (hasDetails) {
+
+                detailsHTML =
+                  `<div class="details">`;
+
+
+                if (note1) {
+
+                  detailsHTML += `
+                    <div class="detail-row">
+
+                      <div class="detail-label">
+                        備註
                       </div>
 
-                      <div>
-
-                        <div class="customer">
-                          ${x.customer || ""}
-                        </div>
-
-                        <span class="tag ${tc(x.task)}">
-                          ${x.task || ""}
-                        </span>
-
-                        ${noteHTML}
-
-                      </div>
-
-                      <div class="people">
-                        ${peopleHTML}
+                      <div class="detail-text">
+                        ${esc(note1)}
                       </div>
 
                     </div>
                   `;
-
-                })
-                .join("");
+                }
 
 
-            return `
-              <section class="day">
+                if (note2) {
 
-                <div class="dayhead">
+                  detailsHTML += `
+                    <div class="detail-row">
 
-                  <span>
-                    ${k}${weekday}
-                  </span>
+                      <div class="detail-label">
+                        備註2
+                      </div>
 
-                  <span>
-                    ${jobs.length} 筆
-                  </span>
+                      <div class="detail-text">
+                        ${esc(note2)}
+                      </div>
+
+                    </div>
+                  `;
+                }
+
+
+                if (note3) {
+
+                  detailsHTML += `
+                    <div class="detail-row">
+
+                      <div class="detail-label">
+                        備註3
+                      </div>
+
+                      <div class="detail-text">
+                        ${esc(note3)}
+                      </div>
+
+                    </div>
+                  `;
+                }
+
+
+                detailsHTML +=
+                  `</div>`;
+              }
+
+
+
+              return `
+
+                <div
+                  class="job"
+                  onclick="toggleJob(this)"
+                >
+
+
+                  <div class="time">
+
+                    ${esc(
+                      x.time ||
+                      "未定"
+                    )}
+
+                  </div>
+
+
+                  <div>
+
+
+                    <div class="customer">
+
+                      ${esc(
+                        x.customer ||
+                        ""
+                      )}
+
+                    </div>
+
+
+                    <span
+                      class="tag ${tc(x.task)}"
+                    >
+
+                      ${esc(
+                        x.task ||
+                        ""
+                      )}
+
+                    </span>
+
+
+                    ${hintHTML}
+
+
+                  </div>
+
+
+                  <div class="people">
+
+                    ${peopleHTML}
+
+                  </div>
+
+
+                  ${detailsHTML}
+
 
                 </div>
 
-                ${jobHTML}
+              `;
 
-              </section>
-            `;
+            })
+            .join("");
 
-          })
-          .join("")
-          ||
 
-          `
-            <div class="state">
-              沒有符合條件的勤務
+
+        return `
+
+          <section class="day">
+
+
+            <div class="dayhead">
+
+
+              <span>
+
+                ${esc(k)}${weekday}
+
+              </span>
+
+
+              <span>
+
+                ${jobs.length} 筆
+
+              </span>
+
+
             </div>
-          `;
-    }
 
 
-    // ==========================
-    // 從 Google Sheet API 讀資料
-    // ==========================
-
-    async function load() {
-
-      if (!window.SCHEDULE_API_URL) {
-
-        info.textContent =
-          "尚未設定 API";
+            ${jobHTML}
 
 
-        list.innerHTML =
-          `
-            <div class="state">
-              請先在 config.js 貼上 Apps Script 網址
-            </div>
-          `;
+          </section>
 
-        return;
-      }
+        `;
 
+      })
+      .join("")
 
-      try {
+    ||
 
-        const response =
-          await fetch(
-            window.SCHEDULE_API_URL +
-            "?action=list&t=" +
-            Date.now(),
-            {
-              cache: "no-store"
-            }
-          );
+    `
+
+      <div class="state">
+
+        沒有符合條件的勤務
+
+      </div>
+
+    `;
+
+}
 
 
-        const json =
-          await response.json();
+
+/*
+ * 點勤務展開 / 收起
+ */
+
+function toggleJob(element) {
+
+  /*
+   * 沒有備註就不需要展開
+   */
+
+  if (
+    !element.querySelector(
+      ".details"
+    )
+  ) {
+    return;
+  }
 
 
-        if (!json.ok) {
+  element
+    .classList
+    .toggle(
+      "open"
+    );
 
-          throw Error(
-            json.error ||
-            "讀取失敗"
-          );
+}
 
+
+
+/*
+ * API
+ */
+
+async function load() {
+
+  if (
+    !window.SCHEDULE_API_URL
+  ) {
+
+    info.textContent =
+      "尚未設定 API";
+
+
+    list.innerHTML =
+      `
+
+        <div class="state">
+
+          請先在 config.js 貼上 Apps Script 網址
+
+        </div>
+
+      `;
+
+
+    return;
+  }
+
+
+  try {
+
+
+    const response =
+
+      await fetch(
+
+        window.SCHEDULE_API_URL
+
+        +
+
+        "?action=list&t="
+
+        +
+
+        Date.now(),
+
+        {
+          cache: "no-store"
         }
 
-
-        DATA =
-          json.data || [];
+      );
 
 
-        render();
+
+    const json =
+      await response.json();
 
 
-      } catch (e) {
 
-        info.textContent =
-          "資料讀取失敗";
+    if (!json.ok) {
 
+      throw Error(
+        json.error ||
+        "讀取失敗"
+      );
 
-        list.innerHTML =
-          `
-            <div class="state">
-              ${e.message}
-            </div>
-          `;
-
-      }
     }
 
 
-    // ==========================
-    // 日期篩選
-    // ==========================
 
-    document
-      .querySelectorAll("[data-view]")
-      .forEach(button => {
+    DATA =
+      json.data ||
+      [];
 
-        button.onclick = () => {
+
+
+    render();
+
+
+  } catch (e) {
+
+
+    info.textContent =
+      "資料讀取失敗";
+
+
+    list.innerHTML =
+      `
+
+        <div class="state">
+
+          ${esc(e.message)}
+
+        </div>
+
+      `;
+
+  }
+
+}
+
+
+
+/*
+ * 日期篩選
+ */
+
+document
+  .querySelectorAll(
+    "[data-view]"
+  )
+  .forEach(
+    button => {
+
+      button.onclick =
+        () => {
+
 
           document
-            .querySelectorAll("[data-view]")
+            .querySelectorAll(
+              "[data-view]"
+            )
             .forEach(
               x =>
-                x.classList.remove("on")
+                x.classList.remove(
+                  "on"
+                )
             );
 
 
           button
             .classList
-            .add("on");
+            .add(
+              "on"
+            );
 
 
           currentView =
@@ -843,32 +1406,46 @@
 
 
           render();
+
         };
 
-      });
+    }
+  );
 
 
-    // ==========================
-    // 人員篩選
-    // ==========================
 
-    document
-      .querySelectorAll("[data-person]")
-      .forEach(button => {
+/*
+ * 人員篩選
+ */
 
-        button.onclick = () => {
+document
+  .querySelectorAll(
+    "[data-person]"
+  )
+  .forEach(
+    button => {
+
+      button.onclick =
+        () => {
+
 
           document
-            .querySelectorAll("[data-person]")
+            .querySelectorAll(
+              "[data-person]"
+            )
             .forEach(
               x =>
-                x.classList.remove("on")
+                x.classList.remove(
+                  "on"
+                )
             );
 
 
           button
             .classList
-            .add("on");
+            .add(
+              "on"
+            );
 
 
           currentPerson =
@@ -876,32 +1453,43 @@
 
 
           render();
+
         };
 
-      });
+    }
+  );
 
 
-    // ==========================
-    // 搜尋
-    // ==========================
 
-    search.oninput =
-      render;
+/*
+ * 搜尋
+ */
 
-
-    // ==========================
-    // 啟動
-    // ==========================
-
-    load();
+search.oninput =
+  render;
 
 
-    // 每 60 秒同步一次 Google Sheet
-    setInterval(
-      load,
-      60000
-    );
-  </script>
+
+/*
+ * 啟動
+ */
+
+load();
+
+
+
+/*
+ * 每 60 秒重新同步
+ */
+
+setInterval(
+  load,
+  60000
+);
+
+</script>
+
 
 </body>
+
 </html>
