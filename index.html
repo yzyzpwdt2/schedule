@@ -676,7 +676,19 @@
 
 <script>
 
+const CACHE_KEY = "schedule-cache-v1";
+
 let DATA = [];
+
+try {
+  const cached = localStorage.getItem(CACHE_KEY);
+
+  if (cached) {
+    DATA = JSON.parse(cached);
+  }
+} catch (e) {
+  DATA = [];
+}
 
 let currentView = "all";
 
@@ -1334,11 +1346,15 @@ async function load() {
 
 
 
-    DATA =
-      json.data ||
-      [];
+    DATA = json.data || [];
 
-
+    try {
+      localStorage.setItem(
+        CACHE_KEY,
+        JSON.stringify(DATA)
+      );
+    } catch (e) {
+    }
 
     render();
 
@@ -1474,14 +1490,17 @@ search.oninput =
  * 啟動
  */
 
+// 有上次資料，先立即顯示
+if (DATA.length > 0) {
+  render();
+  info.textContent =
+    `目前顯示 ${DATA.length} 筆・同步中…`;
+}
+
+// 背景抓最新 Google Sheet
 load();
 
-
-
-/*
- * 每 60 秒重新同步
- */
-
+// 每 60 秒重新同步
 setInterval(
   load,
   60000
